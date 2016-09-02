@@ -1,0 +1,47 @@
+---
+title: "RESULTS ASSIGN"
+author: "K Nel"
+date: "01 September 2016"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#import data
+results<- read.csv('results.csv')
+
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+results2 <- tidyr::gather(results, key= Int_interval, value=Change_in_wrinkling, X0_5_w:X0_30_e) #change to long format
+
+selectdata <- select(results2, Subject_No, Race, Int_interval, Change_in_wrinkling) #choose columns
+
+plot_results<- filter(selectdata, Race=="W", Race=="B") #select b&w obs. only
+
+print(selectdata)
+
+# choose the dataframe (must be long format)
+ggplot(data = plot_results) +
+    # set the aesthetic mappings(what variable represents each plot characteristic)
+    aes(y = Change_in_wrinkling, x = Int_interval, fill = Race) +
+    # choose the geom (type of plot), 'alpha' changes the transparency of the fill
+    # 'colour' sets the colour of the ouline
+    geom_boxplot(alpha = 0.5, colour = 'black') +
+    # set the labels
+    labs(y = 'Change in wrinkle grading', x = 'Test time interval (minutes)') +
+    # Change the colours and legend features
+    scale_fill_manual(name = 'Race group',
+                      label = c(black = 'Black', white = 'White'),
+                      # hex codes: '#000000' = black, '#FFFFFF' = white
+                      values = c(black = '#000000', white = '#FFFFFF'))
+    # To fine tune the font size, background colour, etc, use theme()
+
+```
+
+
+
